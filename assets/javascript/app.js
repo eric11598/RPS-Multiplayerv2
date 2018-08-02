@@ -25,7 +25,7 @@ var config = {
   var ref = database.ref();
   var playersRef = ref.child("players");
 
-  var player = 'one';
+  var player;
   var name;
 
   //ref.child("Victor").setValue("setting custom key when pushing new data to firebase database");
@@ -34,12 +34,10 @@ var config = {
     event.preventDefault();
     name = $("#name-input").val().trim();
 
-
-
-
     dataRef.ref().child("players").update({
-        [player]: {
-            name: name,
+        [name]: {
+            playerNumber: player,
+            playerName: name,
             losses: 0,
             wins: 0,
             move: '',
@@ -65,7 +63,7 @@ var config = {
     });
 
   
-    playerReference = "players/"+player;
+    playerReference = "players/"+name;
     var playerRef = firebase.database().ref(playerReference)
     playerRef.onDisconnect().remove();
     
@@ -74,43 +72,70 @@ var config = {
     playersRef.once('value', function(snapshot) {
       if (snapshot.hasChild('one')) {
         console.log("check once");
-        $("#playerOneName").text(snapshot.val().players.one.name);
+        $("#playerOneName").text(snapshot.val().players.name.playerName);
+      }
+    });
+
+    
+    //If player 1 drops out and player 2 exists, next player is player 1
+    ref.child("players").orderByChild("playerNumber").equalTo("Two").once("value", function(snapshot){
+      if (snapshot.exists()){
+        player = "One";
+        console.log("exists!");
       }
     });
 
    
+    //If no players, first player to enter is player 1, second is player 2
+    //If a first player exists, second player is player 2
     playersRef.on("value", function(snapshot) {
-
-      console.log("player   "+name);
-
-    if (snapshot.hasChild('one')) {
-        console.log("constant check")
-        player = 'two';
-        $("#playerOneName").text(snapshot.val().one.name);
+   
+      if(snapshot.exists())
+      { 
+        console.log(snapshot.val().name);
+        player = 'Two';
       }
-
-      if (snapshot.hasChild('two')) {
-        console.log("constant check")
-        //player = 'two';
-        $("#playerTwoName").text(snapshot.val().two.name);
+      else
+      {
+        player = 'One';
       }
-
-
-
       
-      //$("#playerTwoName").text(snapshot.val().players.two.name);
+ 
+
     });
   
   
   // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
   
-  /*
+  
   playersRef.on("child_added", function(childSnapshot) {
   
-    console.log("BRAAAAAA");
-    player = 'two';
+    
+    
+    var number = childSnapshot.val().playerNumber;
+    var div = "#player"+number+"Name";
+    //console.log(div);
+    $(div).text(childSnapshot.val().playerName);
+
+
+    var key = childSnapshot.key; // "ada"
+
+    
   
-  });*/
+  });
+
+  playersRef.on("child_removed", function(childSnapshot) {
+  
+    //console.log(childSnapshot.val());
+    
+    var number = childSnapshot.val().playerNumber;
+    var div = "#player"+number+"Name";
+    console.log(div);
+    $(div).text("Waiting...");
+
+  
+  });
+
   
   // Example Time Math
   // -----------------------------------------------------------------------------
