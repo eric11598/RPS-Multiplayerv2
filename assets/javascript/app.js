@@ -62,10 +62,18 @@ var config = {
 
     });
 
-  
-    playerReference = "players/"+name;
-    var playerRef = firebase.database().ref(playerReference)
-    playerRef.onDisconnect().remove();
+    
+
+
+    $( window ).unload(function() {
+
+      var playerReference = "players/"+name;
+      console.log(playerReference);
+      var playerRef = firebase.database().ref(playerReference)
+      playerRef.onDisconnect().remove();
+
+
+    });
     
 
 
