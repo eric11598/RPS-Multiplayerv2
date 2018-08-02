@@ -26,12 +26,16 @@ var config = {
   var playersRef = ref.child("players");
 
   var player = 'one';
+  var name;
 
   //ref.child("Victor").setValue("setting custom key when pushing new data to firebase database");
 
   $("#add-user").on("click", function(event) {
     event.preventDefault();
-    var name = $("#name-input").val().trim();
+    name = $("#name-input").val().trim();
+
+
+
 
     dataRef.ref().child("players").update({
         [player]: {
@@ -64,18 +68,37 @@ var config = {
     playerReference = "players/"+player;
     var playerRef = firebase.database().ref(playerReference)
     playerRef.onDisconnect().remove();
-
     
 
+
+    playersRef.once('value', function(snapshot) {
+      if (snapshot.hasChild('one')) {
+        console.log("check once");
+        $("#playerOneName").text(snapshot.val().players.one.name);
+      }
+    });
+
    
-    ref.on("value", function(snapshot) {
+    playersRef.on("value", function(snapshot) {
+
+      console.log("player   "+name);
+
+    if (snapshot.hasChild('one')) {
+        console.log("constant check")
+        player = 'two';
+        $("#playerOneName").text(snapshot.val().one.name);
+      }
+
+      if (snapshot.hasChild('two')) {
+        console.log("constant check")
+        //player = 'two';
+        $("#playerTwoName").text(snapshot.val().two.name);
+      }
+
+
 
       
-
-
-
-      //$("#playerOneName").text(snapshot.val().players.one.name);
-      //$("#playerTwoName").text(snapshot.val().players.one.name);
+      //$("#playerTwoName").text(snapshot.val().players.two.name);
     });
   
   
