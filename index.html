@@ -36,7 +36,7 @@
             <div class="col-lg-12" id = "inputContainer">
                 
                 <!-- Sign-up Form (note the various input "types")-->
-                <form role="form">
+                <form role="form" id = "inputContainer">
                   <div class="form-group row">
                     <label for="name-input">Name:</label>
                     <input class="form-control" id="name-input" type="text">
@@ -50,7 +50,7 @@
               <div class="col-lg-4" id = "playerOneContainer">
                   <h2>Player 1: </h2>
                   <h2 id = "playerOneName" >Waiting...</h2>
-                <div id = "playerOneButtonContainer">
+                <div id = "playerOneButtonContainer" style = "display: none">
                     <button id="playerOneRock" class="btn btn-secondary btn-sm" value="playerOneRock" player="playerOne">playerOneRock</button>
                     <button id="playerOnePaper" class="btn btn-secondary btn-sm" value="playerOnePaper" player="playerOne">playerOnePaper</button>
                     <button id="playerOneScissor" class="btn btn-secondary btn-sm" value="playerOneScissor" player="playerOne">playerOneScissor</button>
@@ -67,7 +67,7 @@
               <div class="col-lg-4" id = "playerTwoContainer">
                 <h2>Player 2: </h2>
                 <h2 id = "playerTwoName" >Waiting...</h2>
-                <div id = "playerTwoButtonContainer">
+                <div id = "playerTwoButtonContainer" style = "display: none">
                     <button id="playerTwoRock" class="btn btn-secondary btn-sm" value="playerTwoRock" player="playerTwo">playerTwoRock</button>
                     <button id="playerTwoPaper" class="btn btn-secondary btn-sm" value="playerTwoPaper" player="playerTwo">playerTwoPaper</button>
                     <button id="playerTwoScissors" class="btn btn-secondary btn-sm" value="playerTwoScissors" player="playerTwo">playerTwoScissors</button>

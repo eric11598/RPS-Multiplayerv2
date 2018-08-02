@@ -27,12 +27,14 @@ var config = {
 
   var player;
   var name;
+  var childNumber = 0;
 
   //ref.child("Victor").setValue("setting custom key when pushing new data to firebase database");
 
   $("#add-user").on("click", function(event) {
     event.preventDefault();
     name = $("#name-input").val().trim();
+
 
     dataRef.ref().child("players").update({
         [name]: {
@@ -44,34 +46,37 @@ var config = {
             status: 'connected',
           }});
     
+        $("#inputContainer").hide();
 
-
+          console.log("BOOO");
+          dataRef.ref().update({
+            turn: 1,
+          });
+      
 
     });
     
+    /*
     var connectedRef = database.ref(".info/connected");
     connectedRef.on("value", function (snapshot) {
 
       console.log("connected!");
-      
-      if(playersRef.two)
-      {
-        console.log("YEET");
-      }
 
-
-    });
+    });*/
 
     
 
 
     $( window ).unload(function() {
 
+      
       var playerReference = "players/"+name;
-      console.log(playerReference);
-      var playerRef = firebase.database().ref(playerReference)
-      playerRef.onDisconnect().remove();
 
+      var playerRef = firebase.database().ref(playerReference)
+      var turnRef = firebase.database().ref("turn");
+
+      playerRef.onDisconnect().remove();
+      turnRef.onDisconnect().remove();
 
     });
     
@@ -97,28 +102,45 @@ var config = {
     //If no players, first player to enter is player 1, second is player 2
     //If a first player exists, second player is player 2
     playersRef.on("value", function(snapshot) {
-   
+      
+
       if(snapshot.exists())
       { 
-        console.log(snapshot.val().name);
         player = 'Two';
       }
       else
       {
         player = 'One';
       }
-      
- 
 
+      console.log(snapshot.val());
+      console.log("NUMBEr "+childNumber);
+
+      
+
+
+      
     });
   
+    ref.on("value", function(snapshot) {
+
+      if(childNumber == 2)
+      { 
+        turn = snapshot.val().turn;
+        console.log("START GAMMEEE BOOOYS" + turn);
+
+        
+        
+      }
+
+    });
   
   // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
   
   
   playersRef.on("child_added", function(childSnapshot) {
   
-    
+    childNumber++;
     
     var number = childSnapshot.val().playerNumber;
     var div = "#player"+number+"Name";
@@ -134,7 +156,7 @@ var config = {
 
   playersRef.on("child_removed", function(childSnapshot) {
   
-    //console.log(childSnapshot.val());
+    childNumber--;
     
     var number = childSnapshot.val().playerNumber;
     var div = "#player"+number+"Name";
