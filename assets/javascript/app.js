@@ -79,6 +79,14 @@ var config = {
 
       else if (gameTurn === 2)
       {
+
+        playerRef.on('value', function(snapshot){
+          snapshot.forEach(function(child){
+              var key = child.key;
+              var value = child.val();
+              user_char[key] = value;
+          });
+      });
         
         
         
