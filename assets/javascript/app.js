@@ -56,14 +56,44 @@ var config = {
 
     });
     
-    /*
-    var connectedRef = database.ref(".info/connected");
-    connectedRef.on("value", function (snapshot) {
 
-      console.log("connected!");
+    $(".btn-secondary").on("click", function(event) {
+      
+      
+      var gameTurn;
+      var move = $(this).val();
 
-    });*/
+      
+      dataRef.ref().child("players").child(name).update({
+            move: move,          
+          });
 
+      ref.once("value", function(snapshot) {
+        gameTurn = snapshot.val().turn;
+      });
+
+      console.log("YEEETSTER "+gameTurn);
+
+      if (gameTurn === 1)
+      gameTurn = 2;
+
+      else if (gameTurn === 2)
+      {
+        
+        
+        
+        gameTurn = 1;
+
+      }
+
+      console.log("CHANGEDBOY "+gameTurn);
+
+      dataRef.ref().update({
+        turn: gameTurn,
+      });
+
+
+    });
     
 
 
@@ -126,10 +156,36 @@ var config = {
 
       if(childNumber == 2)
       { 
-        turn = snapshot.val().turn;
-        console.log("START GAMMEEE BOOOYS" + turn);
+        var gameTurn = snapshot.val().turn;
+        console.log("START GAMMEEE BOOOYS" + gameTurn);
 
+        playersRef.child(name).once("value", function(snapshot){
+
+          var playerTurn = 0;
+          if(snapshot.val().playerNumber === 'One')
+          playerTurn = 1;
+
+          if(snapshot.val().playerNumber === 'Two')
+          playerTurn = 2;
+
+          if (gameTurn===playerTurn)
+          {
+            var div = "#player"+snapshot.val().playerNumber+"ButtonContainer";
+            $(div).show();
+          }
+
+          else{
+            
+            var div = "#player"+snapshot.val().playerNumber+"Status";
+            console.log(div);
+            $(div).text("WAITING...");
+          }
+
+          console.log("EAT BUTT BOOOYS "+snapshot.val().playerName);
+
+        });
         
+
         
       }
 
@@ -144,7 +200,6 @@ var config = {
     
     var number = childSnapshot.val().playerNumber;
     var div = "#player"+number+"Name";
-    //console.log(div);
     $(div).text(childSnapshot.val().playerName);
 
 
