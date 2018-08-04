@@ -72,29 +72,60 @@ var config = {
         gameTurn = snapshot.val().turn;
       });
 
-      console.log("YEEETSTER "+gameTurn);
 
       if (gameTurn === 1)
       gameTurn = 2;
 
       else if (gameTurn === 2)
       {
+        console.log("here");
+        var user = {};
 
-        playerRef.on('value', function(snapshot){
+        playersRef.on('value', function(snapshot){
           snapshot.forEach(function(child){
+              console.log("here");
               var key = child.key;
-              var value = child.val();
-              user_char[key] = value;
+              var value = JSON.stringify(child.val().move);
+              var playerNumber = JSON.stringify(child.val().playerNumber);
+
+              playerNumber = playerNumber.replace(/['"]+/g, '')
+
+              console.log("key+  "+playerNumber+"   value+ "+value);
+              user[playerNumber] = value;
           });
+
+          
       });
-        
-        
+        console.log(user)
+        console.log(user.One+ " yeeeee  "+user.Two);
+
+
+        if(user['One']===user['Two'])
+        console.log("ITS A TIE");
+
+        if(user['One']==='rock' && user['Two'] === 'paper')
+        console.log("TWO WINS")
+
+        if(user['One']==='rock' && user['Two'] === 'scissors')
+        console.log("ONE WINS");
+
+        if(user['One']==='paper' && user['Two'] === 'rock')
+        console.log("ONE WINS");
+
+        if(user['One']==='paper' && user['Two'] === 'scissors')
+        console.log("TWO WINS");
+
+        if(user['One']==='scissors' && user['Two'] === 'rock')
+        console.log("TWO WINS");
+
+        if(user['One']==='scissors' && user['Two'] === 'paper')
+        console.log("ONE WINS");
+
         
         gameTurn = 1;
 
       }
 
-      console.log("CHANGEDBOY "+gameTurn);
 
       dataRef.ref().update({
         turn: gameTurn,
@@ -107,7 +138,6 @@ var config = {
 
     $( window ).unload(function() {
 
-      
       var playerReference = "players/"+name;
 
       var playerRef = firebase.database().ref(playerReference)
@@ -151,8 +181,6 @@ var config = {
         player = 'One';
       }
 
-      console.log(snapshot.val());
-      console.log("NUMBEr "+childNumber);
 
       
 
