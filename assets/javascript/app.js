@@ -89,6 +89,7 @@ var config = {
               var playerNumber = JSON.stringify(child.val().playerNumber);
 
               playerNumber = playerNumber.replace(/['"]+/g, '')
+              value = value.replace(/['"]+/g, '')
 
               console.log("key+  "+playerNumber+"   value+ "+value);
               user[playerNumber] = value;
@@ -100,25 +101,25 @@ var config = {
         console.log(user.One+ " yeeeee  "+user.Two);
 
 
-        if(user['One']===user['Two'])
+        if(user.One === user.Two)
         console.log("ITS A TIE");
 
-        if(user['One']==='rock' && user['Two'] === 'paper')
+        if(user.One==='rock' && user.Two === 'paper')
         console.log("TWO WINS")
 
-        if(user['One']==='rock' && user['Two'] === 'scissors')
+        if(user.One==='rock' && user.Two === 'scissors')
         console.log("ONE WINS");
 
-        if(user['One']==='paper' && user['Two'] === 'rock')
+        if(user.One==='paper' && user.Two === 'rock')
         console.log("ONE WINS");
 
-        if(user['One']==='paper' && user['Two'] === 'scissors')
+        if(user.One==='paper' && user.Two === 'scissors')
         console.log("TWO WINS");
 
-        if(user['One']==='scissors' && user['Two'] === 'rock')
+        if(user.One==='scissors' && user.Two === 'rock')
         console.log("TWO WINS");
 
-        if(user['One']==='scissors' && user['Two'] === 'paper')
+        if(user.One==='scissors' && user.Two === 'paper')
         console.log("ONE WINS");
 
         
