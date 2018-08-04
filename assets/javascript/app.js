@@ -17,27 +17,26 @@ var config = {
   messagingSenderId: "791884709862"
 };
 
-  firebase.initializeApp(config);
+firebase.initializeApp(config);
   
-  var database = firebase.database();
-  var dataRef = firebase.database();
+var database = firebase.database();
+var dataRef = firebase.database();
+var ref = database.ref();
+var playersRef = ref.child("players");
 
-  var ref = database.ref();
-  var playersRef = ref.child("players");
+var player;
+var name;
+var childNumber = 0;
 
-  var player;
-  var name;
-  var childNumber = 0;
+  
 
-  //ref.child("Victor").setValue("setting custom key when pushing new data to firebase database");
-
-  $("#add-user").on("click", function(event) {
-    event.preventDefault();
-    name = $("#name-input").val().trim();
+$("#add-user").on("click", function(event) {
+  event.preventDefault();
+  name = $("#name-input").val().trim();
 
 
-    dataRef.ref().child("players").update({
-        [name]: {
+  dataRef.ref().child("players").update({
+    [name]: {
             playerNumber: player,
             playerName: name,
             losses: 0,
@@ -57,7 +56,7 @@ var config = {
     });
     
 
-    $(".btn-secondary").on("click", function(event) {
+  $(".btn-secondary").on("click", function(event) {
       
       
       var gameTurn;
@@ -79,54 +78,142 @@ var config = {
       else if (gameTurn === 2)
       {
         console.log("here");
-        var user = {};
+        var playerOne = {};
+        var playerTwo = {};
+
+        //OPTIMIZE WITH FOR LOOPS 
 
         playersRef.on('value', function(snapshot){
           snapshot.forEach(function(child){
               console.log("here");
               var key = child.key;
-              var value = JSON.stringify(child.val().move);
-              var playerNumber = JSON.stringify(child.val().playerNumber);
 
-              playerNumber = playerNumber.replace(/['"]+/g, '')
-              value = value.replace(/['"]+/g, '')
 
-              console.log("key+  "+playerNumber+"   value+ "+value);
-              user[playerNumber] = value;
+              var moveValue = JSON.stringify(child.val().move);
+              var numberValue = JSON.stringify(child.val().playerNumber);
+              var nameValue = JSON.stringify(child.val().playerName);
+              var winsValue = JSON.stringify(child.val().wins);
+              var lossesValue = JSON.stringify(child.val().losses);
+
+              numberValue = numberValue.replace(/['"]+/g, '')
+              moveValue = moveValue.replace(/['"]+/g, '')
+              nameValue = nameValue = nameValue.replace(/['"]+/g, '')
+
+              if(numberValue === 'One')
+              {
+                playerOne['move'] = moveValue;
+                playerOne['wins'] = Number(winsValue);
+                playerOne['losses'] = Number(lossesValue);
+                playerOne['name'] = nameValue;
+                playerOne['number'] = numberValue;
+              }
+
+              if(numberValue === 'Two')
+              {
+                playerTwo['move'] = moveValue;
+                playerTwo['wins'] = Number(winsValue);
+                playerTwo['losses'] = Number(lossesValue);
+                playerTwo['name'] = nameValue;
+                playerTwo['number'] = numberValue;
+              }
+
+
+
+              
+              //user[playerNumber] = value;
           });
 
           
       });
-        console.log(user)
-        console.log(user.One+ " yeeeee  "+user.Two);
+        console.log(playerOne);
+        console.log(playerTwo);
 
+        
+        var winner;
 
-        if(user.One === user.Two)
-        console.log("ITS A TIE");
+        
 
-        if(user.One==='rock' && user.Two === 'paper')
-        console.log("TWO WINS")
+        if(playerOne.move === playerTwo.move)
+        winner = 0;
 
-        if(user.One==='rock' && user.Two === 'scissors')
-        console.log("ONE WINS");
+        
+        if(playerOne.move==='rock' && playerTwo.move === 'paper')
+        winner = 2;
 
-        if(user.One==='paper' && user.Two === 'rock')
-        console.log("ONE WINS");
+        if(playerOne.move==='rock' && playerTwo.move === 'scissors')
+        winner = 1;
 
-        if(user.One==='paper' && user.Two === 'scissors')
-        console.log("TWO WINS");
+        if(playerOne.move==='paper' && playerTwo.move === 'rock')
+        winner = 1;
 
-        if(user.One==='scissors' && user.Two === 'rock')
-        console.log("TWO WINS");
+        if(playerOne.move==='paper' && playerTwo.move === 'scissors')
+        winner = 2;
 
-        if(user.One==='scissors' && user.Two === 'paper')
-        console.log("ONE WINS");
+        if(playerOne.move==='scissors' && playerTwo.move === 'rock')
+        winner = 2;
 
+        if(playerOne.move==='scissors' && playerTwo.move === 'paper')
+        winner = 1;
+        
+
+      if(winner === 0)
+      {
+        $("#gameContainer").text("Tie!")
+      }
+
+      if(winner === 1)
+      {
+        $("#gameContainer").text("Player 1 Wins!")
+
+        var wins = Number(playerOne.wins);
+        wins++;
+        playerOne.wins = wins;
+
+        var losses = Number(playerTwo.losses);
+        losses++;
+        playerTwo.losses = losses;
+      }
+
+      if(winner === 2)
+      {
+        $("#gameContainer").text("Player 2 Wins!")
+
+        var wins = Number(playerTwo.wins);
+        wins++;
+        playerTwo.wins = wins;
+
+        var losses = Number(playerOne.losses)
+        losses++;
+        playerOne.losses = losses;
+      }
+
+      console.log(playerOne);
+      console.log(playerTwo);
         
         gameTurn = 1;
 
-      }
+        dataRef.ref().child("players").update({
+          [playerOne.name]: {
+              playerNumber: playerOne.number,
+              playerName: playerOne.name,
+              move: '',
+              wins: playerOne.wins,
+              losses: playerOne.losses,
+              status: 'connected',
+            },
 
+          [playerTwo.name]: {
+              playerNumber: playerTwo.number,
+              playerName: playerTwo.name,
+              move: '',
+              wins: playerTwo.wins,
+              losses: playerTwo.losses,
+              status: 'connected',
+
+          
+          }});
+
+      }
 
       dataRef.ref().update({
         turn: gameTurn,
@@ -169,7 +256,7 @@ var config = {
 
    
     //If no players, first player to enter is player 1, second is player 2
-    //If a first player exists, second player is player 2
+    //If a first player exists, second player is still player 2
     playersRef.on("value", function(snapshot) {
       
 
@@ -181,12 +268,7 @@ var config = {
       {
         player = 'One';
       }
-
-
-      
-
-
-      
+    
     });
   
     ref.on("value", function(snapshot) {
@@ -196,14 +278,22 @@ var config = {
         var gameTurn = snapshot.val().turn;
         console.log("START GAMMEEE BOOOYS" + gameTurn);
 
+        
+
+
+        
         playersRef.child(name).once("value", function(snapshot){
 
           var playerTurn = 0;
           if(snapshot.val().playerNumber === 'One')
-          playerTurn = 1;
+          {
+            playerTurn = 1;
+          }
 
           if(snapshot.val().playerNumber === 'Two')
-          playerTurn = 2;
+          {    
+            playerTurn = 2;
+          }
 
           if (gameTurn===playerTurn)
           {
@@ -212,18 +302,12 @@ var config = {
           }
 
           else{
-            
             var div = "#player"+snapshot.val().playerNumber+"Status";
             console.log(div);
-            $(div).text("WAITING...");
+            $(div).text("WAITING FOR PLAYER...");
           }
 
-          console.log("EAT BUTT BOOOYS "+snapshot.val().playerName);
-
-        });
-        
-
-        
+        }); 
       }
 
     });
