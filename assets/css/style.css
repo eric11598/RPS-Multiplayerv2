@@ -1,4 +1,14 @@
-#gameContainer{
+
+#playerOneContainer{
     border-style: solid;
     border-color: black;
+}
+
+#playerTwoContainer{
+    border-style: solid;
+    border-color: black;
+}
+
+#gameContainer {
+    text-align: center;
 }

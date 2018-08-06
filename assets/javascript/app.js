@@ -1,13 +1,4 @@
-// Steps to complete:
 
-// 1. Initialize Firebase
-// 2. Create button for adding new employees - then update the html + update the database
-// 3. Create a way to retrieve employees from the employee database.
-// 4. Create a way to calculate the months worked. Using difference between start and current time.
-//    Then use moment.js formatting to set difference in months.
-// 5. Calculate Total billed
-
-// 1. Initialize Firebase
 var config = {
   apiKey: "AIzaSyAuU7UCLFi2PAoQdVSDLuQjWKfb6VDx89I",
   authDomain: "rpsmultiplayer-98fad.firebaseapp.com",
@@ -34,12 +25,7 @@ $("#add-user").on("click", function(event) {
   event.preventDefault();
   name = $("#name-input").val().trim();
 
-  console.log("THIS IS PLAYER "+player);
-
-
-
-
-
+ 
   dataRef.ref().child("players").update({
     [name]: {
             playerNumber: player,
@@ -72,9 +58,8 @@ $(".btn-secondary").on("click", function(event) {
         
   var gameTurn;
   var move = $(this).val();
-  console.log("yeeet ya yeeet");
-      
-  dataRef.ref().child("players").child(name).update({
+
+    dataRef.ref().child("players").child(name).update({
     move: move,          
   });
 
@@ -161,12 +146,12 @@ $(".btn-secondary").on("click", function(event) {
 
       if(winner === 0)
       {
-        $("#gameContainer").text("Tie!")
+        $("#gameOverStatus").text("Player 1 - "+playerOne.move+" // Player 2 - "+playerTwo.move+" // Its a tie!")
       }
 
       if(winner === 1)
       {
-        $("#gameContainer").text("Player 1 Wins!")
+        $("#gameOverStatus").text("Player 1 - "+playerOne.move+" // Player 2 - "+playerTwo.move+" // Player 1 wins!")
 
         var wins = Number(playerOne.wins);
         wins++;
@@ -179,7 +164,7 @@ $(".btn-secondary").on("click", function(event) {
 
       if(winner === 2)
       {
-        $("#gameContainer").text("Player 2 Wins!")
+        $("#gameOverStatus").text("Player 1 - "+playerOne.move+" // Player 2 - "+playerTwo.move+" // Player 2 wins!")
 
         var wins = Number(playerTwo.wins);
         wins++;
@@ -335,12 +320,6 @@ ref.on("value", function(snapshot) {
             $(div).show();
           }
 
-          else{
-            var div = "#player"+snapshot.val().playerNumber+"Status";
-            console.log(div);
-            $(div).text("WAITING FOR PLAYER...");
-          }
-
         }); 
       }
 
@@ -371,6 +350,12 @@ playersRef.on("child_added", function(childSnapshot) {
   $(winsDiv).text("0");
   $(lossesDiv).text("0");
 
+  if (childNumber == 1)
+  $("#gameStatus").text("Player "+number+" has connected - waiting for other player!")
+
+  if (childNumber == 2)
+  $("#gameStatus").text("Player "+number+" has connected - waiting for player one move!")
+
 });
 
 playersRef.on("child_removed", function(childSnapshot) {
@@ -387,6 +372,7 @@ playersRef.on("child_removed", function(childSnapshot) {
   
   $(winsDiv).text("0");
   $(lossesDiv).text("0");
+  $("#gameStatus").text("Player "+number+" has disconnected - waiting for player!")
 
 });
 
