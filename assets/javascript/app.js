@@ -38,24 +38,18 @@ $("#add-user").on("click", function(event) {
     
   $("#inputContainer").hide();
 
-
-
-
-
-
-  
   dataRef.ref().update({
     turn: 1, 
-  });
+    });
       
 
-    });
+});
     
 
 $(".btn-secondary").on("click", function(event) {
 
   var div = "#player"+this.id+"ButtonContainer";
-        
+
   var gameTurn;
   var move = $(this).val();
 
@@ -112,8 +106,7 @@ $(".btn-secondary").on("click", function(event) {
           playerTwo['losses'] = Number(lossesValue);
           playerTwo['name'] = nameValue;
           playerTwo['number'] = numberValue;
-        }
-            
+        }          
       });   
     });
   
@@ -222,8 +215,6 @@ playersRef.on('value', function(snapshot){
 
     var winsDiv = "#player"+numberValue+"Wins";
     var lossesDiv = "#player"+numberValue+"Losses";
-
-
   
     $(winsDiv).text(winsValue);
     $(lossesDiv).text(lossesValue);
@@ -281,7 +272,9 @@ playersRef.on('value', function(snapshot){
     foundPlayer = JSON.stringify(child.val().playerNumber);
 
     if (foundPlayer === 'Two')
-    player = 'One';
+      player = 'One';
+
+    
 
     playerCount++;
 
@@ -289,7 +282,6 @@ playersRef.on('value', function(snapshot){
 
   if (playerCount === 0)
     player = 'One';
-
 
 });
 
@@ -317,6 +309,7 @@ ref.on("value", function(snapshot) {
           if (gameTurn===playerTurn)
           {
             var div = "#player"+snapshot.val().playerNumber+"ButtonContainer";
+            $("#gameStatus").text("Game Start! Waiting for both players to move!")
             $(div).show();
           }
 
@@ -354,7 +347,7 @@ playersRef.on("child_added", function(childSnapshot) {
   $("#gameStatus").text("Player "+number+" has connected - waiting for other player!")
 
   if (childNumber == 2)
-  $("#gameStatus").text("Player "+number+" has connected - waiting for player one move!")
+  $("#gameStatus").text("Game Start! Waiting for both players to move!")
 
 });
 

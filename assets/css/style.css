@@ -9,6 +9,10 @@
     border-color: black;
 }
 
-#gameContainer {
+#gameStatus {
+    text-align: center;
+}
+
+#gameOverStatus {
     text-align: center;
 }
